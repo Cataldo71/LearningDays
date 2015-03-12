@@ -1,4 +1,4 @@
-package common;
+package com.autodesk.ic.content.rest.objects;
 
 /**
  * Created by cataldp on 1/27/2015.

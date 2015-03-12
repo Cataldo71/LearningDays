@@ -35,7 +35,7 @@ public class ContentApplication extends ResourceConfig {
         provider.setMapper(mapper);
         register(provider);
 
-        try {
+/*        try {
             // create a configuration for DB environment
             EnvironmentConfig envConf = new EnvironmentConfig();
             // environment will be created if not exists
@@ -47,6 +47,6 @@ public class ContentApplication extends ResourceConfig {
 
         } catch (DatabaseException dbe) {
             System.out.println("Error :" + dbe.getMessage() );
-        }
+        }*/
     }
 }

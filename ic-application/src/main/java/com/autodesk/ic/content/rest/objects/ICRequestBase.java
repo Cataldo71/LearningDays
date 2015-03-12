@@ -1,9 +1,5 @@
 package com.autodesk.ic.content.rest.objects;
 
-import common.ICException;
-
-import java.util.List;
-
 /**
  * Created by cataldp on 1/27/2015.
  */

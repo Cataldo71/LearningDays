@@ -1,15 +1,19 @@
 package com.autodesk.ic.content.rest;
 
-import com.autodesk.ic.content.rest.objects.ICRecipe;
-import common.ICRecipesResponse;
+import com.autodesk.ic.content.rest.objects.ICGetTemplatesResponse;
+import com.autodesk.ic.content.rest.objects.ICTemplateDescriptor;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import com.autodesk.ic.content.storage.AzureSqlDatabase;
 
 /**
  * Created by cataldp on 1/22/2015.
@@ -20,6 +24,10 @@ import java.util.List;
 public class WebService {
     public static final String WEBSERVICE_PATH = "/contentservice/v1";
 
+    // needs to be injected
+    //
+    private AzureSqlDatabase db = new AzureSqlDatabase();
+
     /**
      * Gets information about the running server.
      * This function does not require authentication.
@@ -28,23 +36,28 @@ public class WebService {
     @Path("system")
     @GET
     public String getSystem()  {
-
-        return "Hello from the Content Service!";
+        String dbString = db.heartbeat();
+        return "Pat and Steve's Template Service!" + "\n" + "Database Connection: " + dbString;
     }
 
-    @Path("recipes")
+    @Path("templates")
     @GET
-    public ICRecipesResponse getAllRecipes() {
-        ICRecipesResponse response = new ICRecipesResponse();
-        List<ICRecipe> sampleRecipes = new ArrayList<ICRecipe>();
-        ICRecipe recipe = new ICRecipe();
-        recipe.setDescrption("Sample Recipe");
-        recipe.setPartNumber("1234");
-        recipe.setxPos(0);
-        recipe.setyPos(0);
-        sampleRecipes.add(recipe);
-        response.setRecipes(sampleRecipes);
+    public ICGetTemplatesResponse getTemplates()
+    {
+        ICGetTemplatesResponse response = new ICGetTemplatesResponse();
+        ICTemplateDescriptor tdesc = new ICTemplateDescriptor();
+        tdesc.setTemplateDesc("Coolest Template Ever");
+        tdesc.setTemplateId("Guid:Guid:Guid:Guid");
+        try {
+            tdesc.setThumbnailUrl(new URL("http://imagestoreurl/imageid"));
+        } catch (MalformedURLException ex)
+        {
+            // do nothing, we like bad urls
+        }
+
+        response.setTemplateDescriptors(Arrays.asList(tdesc));
 
         return response;
     }
+
 }

@@ -9,6 +9,7 @@
     <modules>
         <module>ic-war</module>
         <module>ic-application</module>
+        <module>ic-storage</module>
     </modules>
 
     <properties>

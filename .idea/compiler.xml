@@ -23,6 +23,7 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="ic-application" />
+        <module name="ic-storage" />
         <module name="ic-war" />
       </profile>
     </annotationProcessing>
