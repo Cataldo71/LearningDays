@@ -2,26 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="470bfa42-c7be-4fc1-b970-8803b8ac22ad" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ic-storage/src/main/java/com/autodesk/ic/content/storage/AzureSqlDatabase.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ic-storage/src/main/java/com/autodesk/ic/content/storage/BerkeleydbStorage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/rest/objects/ICTemplateDescriptor.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ic-storage/src/main/java/com/autodesk/ic/content/storage/IStorage.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/ic-storage/pom.xml" />
-      <change type="DELETED" beforePath="D:\InventorConnect\ic-application\src\main\java\com\autodesk\ic\content\rest\objects\ICRecipe.java" afterPath="" />
-      <change type="DELETED" beforePath="D:\InventorConnect\ic-application\src\main\java\common\ICRecipesResponse.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/application/ContentApplication.java" afterPath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/application/ContentApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/rest/objects/ICRequestBase.java" afterPath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/rest/objects/ICRequestBase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/rest/WebService.java" afterPath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/rest/WebService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ic-application/ic-application.iml" afterPath="$PROJECT_DIR$/ic-application/ic-application.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ic-war/ic-war.iml" afterPath="$PROJECT_DIR$/ic-war/ic-war.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/ic_war_war_exploded.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/ic_war_war_exploded.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ic-application/pom.xml" afterPath="$PROJECT_DIR$/ic-application/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="D:\InventorConnect\ic-application\src\main\java\com\autodesk\ic\content\rest\objects\ICRecipesResponse.java" afterPath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/rest/objects/ICGetTemplatesResponse.java" />
-      <change type="MOVED" beforePath="D:\InventorConnect\ic-application\src\main\java\common\ICException.java" afterPath="$PROJECT_DIR$/ic-application/src/main/java/com/autodesk/ic/content/rest/objects/ICException.java" />
     </list>
     <ignored path="InventorConnect.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -958,12 +939,17 @@
       <workItem from="1426088382653" duration="181000" />
       <workItem from="1426088574806" duration="6230000" />
       <workItem from="1426105906534" duration="1503000" />
-      <workItem from="1426108533259" duration="11647000" />
+      <workItem from="1426108533259" duration="11713000" />
     </task>
+    <task id="LOCAL-00001" summary="A little house cleaning and added connection to an Azure SQL database instead of berkeley as an option.">
+      <created>1426177967568</created>
+      <updated>1426177967568</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="56184000" />
+    <option name="totallyTimeSpent" value="56250000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="0" width="1932" height="1152" extended-state="0" />
@@ -1016,6 +1002,8 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="A little house cleaning and added connection to an Azure SQL database instead of berkeley as an option." />
+    <option name="LAST_COMMIT_MESSAGE" value="A little house cleaning and added connection to an Azure SQL database instead of berkeley as an option." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
