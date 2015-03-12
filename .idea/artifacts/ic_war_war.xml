@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="war" name="ic-war:war">
-    <output-path>$PROJECT_DIR$/ic-war/target</output-path>
-    <root id="archive" name="ic-war.war">
-      <element id="artifact" artifact-name="ic-war:war exploded" />
-    </root>
-  </artifact>
-</component>
