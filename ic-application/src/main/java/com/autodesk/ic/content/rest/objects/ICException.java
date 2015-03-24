@@ -9,7 +9,17 @@ public class ICException extends RuntimeException{
     /**
      * Used when you want to overwrite the default category on the error code.
      */
-    protected String errorCategory;
+    protected String errorDomain;
+
+    /**
+     * Error message for this error code.
+     */
+    protected String errorMessage;
+
+    /**
+     * developer hint for why this error is occurring.
+     */
+    protected String developerMessage;
 
     /**
      * Meta data.  Currently for internal use only.
@@ -19,26 +29,26 @@ public class ICException extends RuntimeException{
     public ICException(String errorCode) {
         super();
         this.errorCode = errorCode;
-        this.errorCategory = errorCategory;
+        this.errorDomain = errorDomain;
     }
 
     public ICException(String errorCode, Object... metadata) {
         super();
         this.errorCode = errorCode;
-        this.errorCategory = errorCategory;
+        this.errorDomain = errorDomain;
         this.metadata = metadata;
     }
 
     public ICException(String errorCode, Throwable innerException) {
         super(innerException);
         this.errorCode = errorCode;
-        this.errorCategory = errorCategory;
+        this.errorDomain = errorDomain;
     }
 
     public ICException(String errorCode, Throwable innerException, Object... metadata) {
         super(innerException);
         this.errorCode = errorCode;
-        this.errorCategory = errorCategory;
+        this.errorDomain = errorDomain;
         this.metadata = metadata;
     }
 
@@ -51,12 +61,12 @@ public class ICException extends RuntimeException{
         return metadata;
     }
 
-    public String getErrorCategory() {
-        return errorCategory;
+    public String getErrorDomain() {
+        return errorDomain;
     }
 
-    public void setErrorCategory(String errorCategory) {
-        this.errorCategory = errorCategory;
+    public void setErrorDomain(String errorDomain) {
+        this.errorDomain = errorDomain;
     }
 
     public void setMetadata(Object[] metadata) {

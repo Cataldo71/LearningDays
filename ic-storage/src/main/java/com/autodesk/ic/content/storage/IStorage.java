@@ -5,4 +5,8 @@ package com.autodesk.ic.content.storage;
 public interface IStorage {
 
     public String heartbeat();
+
+    public boolean initialize();
+
+    public boolean close();
 }

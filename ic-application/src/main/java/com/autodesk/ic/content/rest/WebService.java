@@ -2,18 +2,26 @@ package com.autodesk.ic.content.rest;
 
 import com.autodesk.ic.content.rest.objects.ICGetTemplatesResponse;
 import com.autodesk.ic.content.rest.objects.ICTemplateDescriptor;
+import com.autodesk.ic.content.service.*;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import com.autodesk.ic.content.storage.AzureSqlDatabase;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 /**
  * Created by cataldp on 1/22/2015.
@@ -23,7 +31,8 @@ import com.autodesk.ic.content.storage.AzureSqlDatabase;
 @Consumes({MediaType.APPLICATION_JSON})
 public class WebService {
     public static final String WEBSERVICE_PATH = "/contentservice/v1";
-
+    @Context
+    private HttpServletRequest httpRequest;
     // needs to be injected
     //
     private AzureSqlDatabase db = new AzureSqlDatabase();
@@ -60,4 +69,38 @@ public class WebService {
         return response;
     }
 
+    @Path("templates")
+    @POST
+    public void postTemplates()
+    {
+        try {
+            FileItemFactory factory = new DiskFileItemFactory();
+
+            ServletFileUpload fileUpload = new ServletFileUpload(factory);
+            fileUpload.setFileSizeMax(9999999); // 10 meg max?
+            BufferedInputStream is = null;
+            if (ServletFileUpload.isMultipartContent(httpRequest)) {
+                List items = fileUpload.parseRequest(httpRequest);
+                Iterator iter = items.iterator();
+                while(iter.hasNext()) {
+                    FileItem item = (FileItem) iter.next();
+                    if(!item.isFormField()) {
+                        is = new BufferedInputStream(item.getInputStream());
+                        is.mark(0);
+                        is.reset();
+                        File f = new File(item.getName());
+                        String name = f.getName();
+                        System.out.println("Storing: " + name + " to Azure File Storage");
+                        AzureStorage storage = new AzureStorage();
+                        storage.StoreFileAsBlob(is,f.length());
+                    }
+                }
+            }
+            is.close();
+        }
+        catch(Exception e)
+        {
+            // bad bad bad
+        }
+    }
 }
