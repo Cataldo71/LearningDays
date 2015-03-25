@@ -9,6 +9,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ContentServletFilter implements Filter {
@@ -28,7 +29,12 @@ public class ContentServletFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
-
+        //////////
+        // This is a HUGE security hole to get around CORS! For our prototype it will be fine
+        // but this could never be part of production code!
+        //////////
+        HttpServletResponse resp = (HttpServletResponse)response;
+        resp.setHeader("Access-Control-Allow-Origin","*");
         chain.doFilter(request, response);
     }
 
