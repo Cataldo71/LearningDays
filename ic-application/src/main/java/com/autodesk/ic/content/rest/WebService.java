@@ -4,6 +4,7 @@ import com.autodesk.ic.content.rest.objects.ICGetTemplatesResponse;
 import com.autodesk.ic.content.rest.objects.ICTemplateDescriptor;
 import com.autodesk.ic.content.service.*;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -30,12 +31,15 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public class WebService {
+
     public static final String WEBSERVICE_PATH = "/contentservice/v1";
+
     @Context
     private HttpServletRequest httpRequest;
-    // needs to be injected
-    //
-    private AzureSqlDatabase db = new AzureSqlDatabase();
+
+    @Inject
+    TemplateService templateService;
+
 
     /**
      * Gets information about the running server.
@@ -45,8 +49,8 @@ public class WebService {
     @Path("system")
     @GET
     public String getSystem()  {
-        String dbString = db.heartbeat();
-        return "Pat and Steve's Template Service!" + "\n" + "Database Connection: " + dbString;
+
+        return templateService.heartbeat();
     }
 
     @Path("templates")

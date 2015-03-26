@@ -1,0 +1,29 @@
+CREATE TABLE IC_TEMPLATE_FILE
+(
+  ID int IDENTITY(1,1) PRIMARY KEY ,
+  Filename nvarchar(256) NOT NULL ,
+  FileSize bigint,
+  StorageId NVARCHAR(256) NOT NULL
+)
+GO
+
+CREATE TABLE IC_TEMPLATE_CATEGORY
+(
+  ID int IDENTITY(1,1) PRIMARY KEY ,
+  CategoryName NVARCHAR(80) NOT NULL
+)
+GO
+CREATE TABLE IC_TEMPLATE_DESCRIPTOR
+(
+  ID int IDENTITY(1,1) PRIMARY KEY ,
+  Name NVARCHAR(256) NOT NULL ,
+  Description NVARCHAR(512),
+  FileId int foreign key references IC_TEMPLATE_FILE(ID)
+)
+  GO
+CREATE TABLE IC_TEMPLATE_TO_CATEGORY
+(
+  TemplateDescId int foreign key references IC_TEMPLATE_DESCRIPTOR(ID),
+  CategoryId int foreign key references IC_TEMPLATE_CATEGORY(ID)
+)
+  GO
