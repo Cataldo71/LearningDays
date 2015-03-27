@@ -37,10 +37,12 @@ public class WebService {
     @Context
     private HttpServletRequest httpRequest;
 
-    @Inject
+
     TemplateService templateService;
 
-
+    public WebService() {
+        templateService = new TemplateService();
+    }
     /**
      * Gets information about the running server.
      * This function does not require authentication.
