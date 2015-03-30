@@ -74,9 +74,17 @@ public interface IStorage {
      * @param storageId Id of the record in whatever storage backend is being used
      * @param Filename name of the physical file
      * @param size size of the file in bytes
-     * @return the Template that was created
+     * @return the TemplateDescriptorId that was created
      */
-    public Template AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException;
+    public long AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException;
+
+    /**
+     * Delete a template from the database. This will delete the template descriptor and the template file
+     * as well as any associations to a category
+     * @param templateDescId
+     * @return true if successful
+     */
+    public boolean DeleteTemplate(long templateDescId) throws DbException;
 
     /**
      * Gets a fully hydrated template object from the ID in the descriptor

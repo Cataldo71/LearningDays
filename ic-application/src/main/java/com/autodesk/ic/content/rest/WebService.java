@@ -1,6 +1,7 @@
 package com.autodesk.ic.content.rest;
 
 import com.autodesk.ic.content.rest.objects.ICGetTemplatesResponse;
+import com.autodesk.ic.content.rest.objects.ICNewTemplateRequest;
 import com.autodesk.ic.content.rest.objects.ICTemplateDescriptor;
 import com.autodesk.ic.content.service.*;
 
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import com.autodesk.ic.content.service.objects.CreateNewTemplateRequest;
 import com.autodesk.ic.content.storage.AzureSqlDatabase;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -59,6 +62,7 @@ public class WebService {
     @GET
     public ICGetTemplatesResponse getTemplates()
     {
+        //templateService.GetAllTemplates();
         ICGetTemplatesResponse response = new ICGetTemplatesResponse();
         ICTemplateDescriptor tdesc = new ICTemplateDescriptor();
         tdesc.setTemplateDesc("Coolest Template Ever");
@@ -77,7 +81,7 @@ public class WebService {
 
     @Path("templates")
     @POST
-    public void postTemplates()
+    public void postTemplates(ICNewTemplateRequest request)
     {
         try {
             FileItemFactory factory = new DiskFileItemFactory();
@@ -91,14 +95,22 @@ public class WebService {
                 while(iter.hasNext()) {
                     FileItem item = (FileItem) iter.next();
                     if(!item.isFormField()) {
+                        // Create a service request
+                        //
+                        CreateNewTemplateRequest.CreateNewTemplateRequestBuilder requestBuilder =
+                                new CreateNewTemplateRequest.CreateNewTemplateRequestBuilder();
                         is = new BufferedInputStream(item.getInputStream());
-                        is.mark(0);
-                        is.reset();
-                        File f = new File(item.getName());
-                        String name = f.getName();
-                        System.out.println("Storing: " + name + " to Azure File Storage");
-                        AzureStorage storage = new AzureStorage();
-                        storage.StoreFileAsBlob(is,f.length());
+
+                        CreateNewTemplateRequest serviceRequest = requestBuilder.name(request.getName())
+                                .units(request.getUnits())
+                                .contributer(request.getContributer())
+                                .description(request.getDescription())
+                                .categories(request.getCategories())
+                                .fileSize(request.getFileSize())
+                                .fileStream(is)
+                                .build();
+
+                        templateService.AddNewTemplate(serviceRequest);
                     }
                 }
             }

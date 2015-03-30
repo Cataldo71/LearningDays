@@ -17,9 +17,9 @@ public class AzureStorage {
     private static final String storageConnectionString =
             "DefaultEndpointsProtocol=https;AccountName=portalvhdsk24ch13b1vchf;AccountKey=sl6ypeaAUbOc7seYiQKPa2FjXmXiFhBcJ1TDYn3Fsa5/N9oHWWB44SFkee8ITbH3YjowNcorAytNfwNh2ZIGYg==";
 
-    private static final String blobContainer = "Templates";
+    private static final String blobContainer = "templates";
 
-    public int StoreFileAsBlob(InputStream is, long length ) {
+    public int StoreFileAsBlob(InputStream is, long length, String storageId ) {
         try
         {
             // Retrieve storage account from connection-string.
@@ -35,13 +35,10 @@ public class AzureStorage {
             // Create the container if it does not exist.
             container.createIfNotExists();
 
-            // Define the path to a local file.
-            final String filePath = "C:\\myimages\\myimage.jpg";
+            // Create or overwrite the storage blob with contents from the input stream
+            CloudBlockBlob blob = container.getBlockBlobReference(storageId);
 
-            // Create or overwrite the "myimage.jpg" blob with contents from a local file.
-            CloudBlockBlob blob = container.getBlockBlobReference("myimage.jpg");
-            File source = new File(filePath);
-            blob.upload(is, source.length());
+            blob.upload(is, length);
 
         }
         catch (Exception e)
@@ -50,6 +47,34 @@ public class AzureStorage {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public boolean DeleteFile(String storageId)
+    {
+        try
+        {
+            // Retrieve storage account from connection-string.
+            CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+
+            // Create the blob client.
+            CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+
+            // Retrieve reference to a previously created container.
+            CloudBlobContainer container = blobClient.getContainerReference(blobContainer);
+
+            // Retrieve reference to a blob
+            CloudBlockBlob blob = container.getBlockBlobReference(storageId);
+
+            // Delete the blob.
+            blob.deleteIfExists();
+        }
+        catch (Exception e)
+        {
+            // Output the stack trace.
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
 }

@@ -193,8 +193,10 @@ public class AzureSqlDatabase implements IStorage {
      * @return the Template that was created
      */
     @Override
-    public Template AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException {
+    public long AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException {
         Statement statement = null;
+        long newTemplateId = -1;
+        int templateFileId = -1;
         Template newTemplate = new Template.TemplateBuilder().Build();
         ResultSet resultSet = null;
         String categoryInsertString = null;
@@ -211,18 +213,19 @@ public class AzureSqlDatabase implements IStorage {
 
             // Add Any New Categories
             //
+            if(newCategories != null)
             for(String newCat : newCategories)
                     statement.executeUpdate("INSERT into dbo.IC_TEMPLATE_CATEGORY (CategoryName) values (" + newCat + "'sample')");
 
             // Add the new Template File
             //
             statement.executeUpdate("INSERT into dbo.IC_TEMPLATE_FILE (Filename,FileSize,StorageId) values ('" +
-                            Filename + "','" + size + "','" + storageId + "')");
+                            Filename + "','" + size + "','" + storageId + "')",Statement.RETURN_GENERATED_KEYS);
 
             // pull out the ID of the newly created template file
             //
             resultSet = statement.getGeneratedKeys();
-            int templateFileId = -1;
+
             while(resultSet.next())
                 templateFileId = resultSet.getInt(1);
 
@@ -231,8 +234,10 @@ public class AzureSqlDatabase implements IStorage {
             statement.executeUpdate("Insert into dbo.IC_TEMPLATE_DESCRIPTOR (Name,Description,FileId)" +
                     "values('" + template.getTemplateName() +
                     "','" + template.getDescription() + "','" +
-                    templateFileId + "')");
-
+                    templateFileId + "')",Statement.RETURN_GENERATED_KEYS);
+            resultSet = statement.getGeneratedKeys();
+            while(resultSet.next())
+                newTemplateId = resultSet.getInt(1);
             // TODO: Connect the categories up to the template descriptors, until this is done categorization will not work
             //
             // statement.executeUpdate("INSERT INTO IC_TEMPLATE_TO_CATEGORY ...
@@ -246,21 +251,66 @@ public class AzureSqlDatabase implements IStorage {
             } catch (SQLException innerex) {
                 // no nothing here
             }
-            finally {
-                throw new DbException(sqlEx,"Add Template to db failed. Transaction rolled back. Template Data:" + template.toString());
-            }
+
+            throw new DbException(sqlEx,"Add Template to db failed. Transaction rolled back. Template Data:" + template.toString());
+
         }
         finally
         {
             try {
                 System.out.println("Database Transaction Failure: AddTemplate");
-                statement.close();
-                resultSet.close();
-            } catch (SQLException innerex) {
-                throw new DbException(innerex,"Add Template to db failed. Transaction rolled back. Template Data:" + template.toString());
+                if(statement != null) statement.close();
+                if(resultSet != null) resultSet.close();
+            } catch (Exception innerex) {
+                throw new DbException(innerex,"Error Closing Statement in Add Template. Template Data:" + template.toString());
             }
         }
-        return newTemplate;
+        return templateFileId;
+    }
+
+    /**
+     * Delete a template from the database. This will delete the template descriptor and the template file
+     * as well as any associations to a category
+     *
+     * @param templateDescId
+     * @return true if successful
+     */
+    @Override
+    public boolean DeleteTemplate(long templateDescId) throws DbException {
+        // Database should cascade the delete
+        // so just delete the template descriptor
+        //
+        Statement statement = null;
+
+        try {
+            statement = connection.createStatement();
+
+            statement.executeUpdate("DELETE from IC_TEMPLATE_FILE WHERE ID=" + templateDescId);
+            connection.commit();
+        }
+        catch (SQLException sqlEx)
+        {
+            sqlEx.printStackTrace();
+            try {
+                System.out.println("Database Transaction Failure: Delete Template");
+                connection.rollback();
+            } catch (SQLException innerex) {
+                // no nothing here
+            }
+
+            throw new DbException(sqlEx,"Delete Template from db failed. Transaction rolled back. Template Id:" + templateDescId);
+
+        }
+        finally
+        {
+            try {
+                if(statement != null) statement.close();
+
+            } catch (Exception innerex) {
+                throw new DbException(innerex,"Error Closing Statement in Delete Template. Template Id:" + templateDescId);
+            }
+        }
+        return false;
     }
 
     /**
@@ -296,7 +346,7 @@ public class AzureSqlDatabase implements IStorage {
             while(resultSet.next())
             {
                 String tablename = resultSet.getString(3);
-                if(tablename.equals("IC_TemplateFile"))
+                if(tablename.equals("IC_TEMPLATE_FILE"))
                     return true;
             }
             return false;
@@ -330,7 +380,10 @@ public class AzureSqlDatabase implements IStorage {
         // Since categories are not hooked up properly, just return an empty set. While this is here
         // no categories will ever get created.
         //
-        return (String[])newCategories.toArray();
+        if(originalSet != null)
+            return (String[])newCategories.toArray();
+        else
+            return null;
     }
 
 }

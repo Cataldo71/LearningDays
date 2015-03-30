@@ -50,7 +50,7 @@ public class TemplateDescriptor {
         private String _contributer;
         private String _units;
 
-        public TemplateDescriptor Build()
+        public TemplateDescriptor build()
         {
             return new TemplateDescriptor(_description,_categories,_templateName,_contributer,_units);
         }

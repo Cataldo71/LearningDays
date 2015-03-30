@@ -20,6 +20,7 @@ public class BerkeleydbStorage implements IStorage {
         // not implemented
         return false;
     }
+
     public String heartbeat() {
         return "BerkeleyDb storage injected but not implemented";
     }
@@ -83,7 +84,7 @@ public class BerkeleydbStorage implements IStorage {
      * @return the Template that was created
      */
     @Override
-    public Template AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException {
+    public long AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 
@@ -107,5 +108,17 @@ public class BerkeleydbStorage implements IStorage {
     @Override
     public Template GetTemplateByFileId(long templateFileId) throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
+    }
+
+    /**
+     * Delete a template from the database. This will delete the template descriptor and the template file
+     * as well as any associations to a category
+     *
+     * @param templateDescId
+     * @return true if successful
+     */
+    @Override
+    public boolean DeleteTemplate(long templateDescId) throws DbException {
+        return false;
     }
 }
