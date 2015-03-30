@@ -113,8 +113,30 @@ public class WebService {
                         templateService.AddNewTemplate(serviceRequest);
                     }
                 }
+            } else
+            {
+                // not a multi part upload. Just create the metadata for now
+                //
+                // Create a service request
+                //
+                CreateNewTemplateRequest.CreateNewTemplateRequestBuilder requestBuilder =
+                        new CreateNewTemplateRequest.CreateNewTemplateRequestBuilder();
+
+
+                CreateNewTemplateRequest serviceRequest = requestBuilder.name(request.getName())
+                        .units(request.getUnits())
+                        .contributer(request.getContributer())
+                        .description(request.getDescription())
+                        .categories(request.getCategories())
+                        .fileSize(request.getFileSize())
+                        .fileStream(null)
+                        .build();
+
+                templateService.AddNewTemplate(serviceRequest);
             }
-            is.close();
+
+            if(is != null)
+                is.close();
         }
         catch(Exception e)
         {

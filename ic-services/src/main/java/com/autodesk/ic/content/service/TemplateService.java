@@ -43,20 +43,22 @@ public class TemplateService {
                 .build();
         try {
 
-
-            BufferedInputStream bis = new BufferedInputStream(request.getFileStream());
-            // Not sure if we need to reset the input stream or not.
+            // If there is an input stream - push it up to Azure
             //
-//            bis.mark(0);
-//            bis.reset();
-            // push the file over to Azure
-            //
+            String storageId = "__NOT_UPLOADED__";
+            if(request.getFileStream() != null) {
+                BufferedInputStream bis = new BufferedInputStream(request.getFileStream());
 
-            String storageId = UUID.randomUUID().toString();
-            azureStorage.StoreFileAsBlob(bis,request.getFileSize(), storageId);
+                // push the file over to Azure
+                //
 
-            // Add the entry to the database
+                storageId = UUID.randomUUID().toString();
+                azureStorage.StoreFileAsBlob(bis, request.getFileSize(), storageId);
+            }
+
+                // Add the entry to the database
             newTemplateId = db.AddTemplate(newDescriptor, storageId, request.getFileName(), request.getFileSize());
+
         }
         catch (DbException dbex)
         {
