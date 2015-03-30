@@ -133,6 +133,59 @@ public class AzureSqlDatabase implements IStorage {
         return serverVersion;
     }
 
+    /**
+     * @return
+     */
+    @Override
+    public List<TemplateDescriptor> GetAllTemplateDescriptors() throws DbException {
+
+        Statement statement = null;
+        ResultSet rs = null;
+        ArrayList<TemplateDescriptor> results = new ArrayList<TemplateDescriptor>();
+        try {
+            statement = connection.createStatement();
+            TemplateDescriptor.TemplateDescriptorBuilder builder = new TemplateDescriptor.TemplateDescriptorBuilder();
+
+            rs = statement.executeQuery("Select IC_TEMPLATE_DESCRIPTOR.Id, IC_TEMPLATE_DESCRIPTOR.name, IC_TEMPLATE_DESCRIPTOR.description,\n" +
+                    "  IC_TEMPLATE_DESCRIPTOR.Units, IC_TEMPLATE_DESCRIPTOR.Contributor, IC_TEMPLATE_FILE.StorageId from IC_TEMPLATE_DESCRIPTOR\n" +
+                    "JOIN IC_TEMPLATE_FILE ON IC_TEMPLATE_DESCRIPTOR.FileId = IC_TEMPLATE_FILE.ID");
+
+            while (rs.next())
+            {
+                results.add(builder.templateId(rs.getInt(1))
+                        .templateName(rs.getString(2))
+                        .description(rs.getString(3))
+                        .units(rs.getString(4))
+                        .contributer(rs.getString(5))
+                        .storageId(rs.getString(6))
+                        .build());
+
+            }
+        }
+        catch (SQLException sqlEx)
+        {
+            sqlEx.printStackTrace();
+            try {
+                System.out.println("Database Transaction Failure: Get All Templates");
+                connection.rollback();
+            } catch (SQLException innerex) {
+                // no nothing here
+            }
+
+            throw new DbException(sqlEx,"Failed to get all templates");
+
+        }
+        finally
+        {
+            try {
+                if(statement != null) statement.close();
+
+            } catch (Exception innerex) {
+                throw new DbException(innerex,"Error Closing Statement in Get All Templates");
+            }
+        }
+        return results;
+    }
 
     /**
      * Get a single template descriptor given an ID
@@ -231,10 +284,13 @@ public class AzureSqlDatabase implements IStorage {
 
             // Add the Template Descriptor
             //
-            statement.executeUpdate("Insert into dbo.IC_TEMPLATE_DESCRIPTOR (Name,Description,FileId)" +
+            String sql = "Insert into dbo.IC_TEMPLATE_DESCRIPTOR (Name,Description,Units,Contributor, FileId)" +
                     "values('" + template.getTemplateName() +
-                    "','" + template.getDescription() + "','" +
-                    templateFileId + "')",Statement.RETURN_GENERATED_KEYS);
+                    "','" + template.getDescription() +
+                    "','" + template.getUnits() +
+                    "','" + template.getContributer() +
+                    "','" +templateFileId + "')";
+            statement.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
             resultSet = statement.getGeneratedKeys();
             while(resultSet.next())
                 newTemplateId = resultSet.getInt(1);

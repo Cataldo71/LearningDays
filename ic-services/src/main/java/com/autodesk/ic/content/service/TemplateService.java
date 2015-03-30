@@ -7,6 +7,7 @@ import com.autodesk.ic.content.storage.objects.Template;
 import com.autodesk.ic.content.storage.objects.TemplateDescriptor;
 
 import java.io.BufferedInputStream;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -26,7 +27,7 @@ public class TemplateService {
     public String heartbeat() {
         return db.heartbeat();
     }
-    public long AddNewTemplate(CreateNewTemplateRequest request) {
+    public long addNewTemplate(CreateNewTemplateRequest request) {
         long newTemplateId = -1;
         // Push the input stream over to Azure Storage Account
         //
@@ -74,7 +75,7 @@ public class TemplateService {
 
     }
 
-    public void RemoveTemplate(long templateId) {
+    public void removeTemplate(long templateId) {
         // get the full template from the db to get the storageID of this template
         //
         String storageId = null;
@@ -93,6 +94,19 @@ public class TemplateService {
         {
             ex.printStackTrace();
         }
+    }
+
+    public List<TemplateDescriptor> getAllTemplates()
+    {
+        List<TemplateDescriptor> descriptors = null;
+        try
+        {
+            descriptors = db.GetAllTemplateDescriptors();
+
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return descriptors;
     }
 
 }

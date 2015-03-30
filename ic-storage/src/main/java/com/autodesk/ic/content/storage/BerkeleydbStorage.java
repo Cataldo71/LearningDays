@@ -62,6 +62,14 @@ public class BerkeleydbStorage implements IStorage {
     }
 
     /**
+     * @return
+     */
+    @Override
+    public List<TemplateDescriptor> GetAllTemplateDescriptors() throws DbException {
+        return null;
+    }
+
+    /**
      * Gets all of the templates from a given contributor
      *
      * @param contributor the name of the contributor

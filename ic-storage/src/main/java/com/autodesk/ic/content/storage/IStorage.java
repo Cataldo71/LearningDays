@@ -34,6 +34,11 @@ public interface IStorage {
     /***************************
      * CRUD OPERATIONS
      ***************************/
+    /**
+     *
+     * @return
+     */
+    public List<TemplateDescriptor> GetAllTemplateDescriptors() throws DbException;
 
     /**
      * Get a single template descriptor given an ID

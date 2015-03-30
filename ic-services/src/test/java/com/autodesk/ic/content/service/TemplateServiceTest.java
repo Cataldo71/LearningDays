@@ -2,10 +2,12 @@ package com.autodesk.ic.content.service;
 
 import com.autodesk.ic.content.service.objects.CreateNewTemplateRequest;
 
+import com.autodesk.ic.content.storage.objects.TemplateDescriptor;
 import org.apache.commons.io.FileUtils;
 import org.testng.annotations.Test;
 
 import java.io.*;
+import java.util.List;
 
 import static org.testng.Assert.*;
 
@@ -45,7 +47,7 @@ public class TemplateServiceTest {
         TemplateService templateService = new TemplateService();
         long templateId = -1;
         try {
-             templateId = templateService.AddNewTemplate(request);
+             templateId = templateService.addNewTemplate(request);
         } catch (Exception ex)
         {
             fail("Exception when adding template to the database");
@@ -56,10 +58,22 @@ public class TemplateServiceTest {
         ////
         try {
 
-            templateService.RemoveTemplate(templateId);
+            templateService.removeTemplate(templateId);
         } catch (Exception ex)
         {
             fail("Exception when removing template from the database");
+        }
+    }
+
+    @Test
+    public void testGetAllTemplates()
+    {
+        TemplateService service = new TemplateService();
+        try {
+            List<TemplateDescriptor> descriptors = service.getAllTemplates();
+        } catch(Exception e)
+        {
+            fail("failed to get all templates", e);
         }
     }
 }

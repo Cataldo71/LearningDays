@@ -6,25 +6,70 @@ import java.net.URL;
  * Created by cataldp on 3/11/2015.
  */
 public class ICTemplateDescriptor {
+    private String description;
+    private String[] categories;
+    private String templateName;
+    private String contributer;
+    private String units;
 
-    private String templateId;
-    private String templateDesc;
+    private long templateId;
+    private String storageId;
     private URL thumbnailUrl;
 
-    public String getTemplateId() {
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String[] getCategories() {
+        return categories;
+    }
+
+    public void setCategories(String[] categories) {
+        this.categories = categories;
+    }
+
+    public String getTemplateName() {
+        return templateName;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
+    public String getContributer() {
+        return contributer;
+    }
+
+    public void setContributer(String contributer) {
+        this.contributer = contributer;
+    }
+
+    public String getUnits() {
+        return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
+    }
+
+    public long getTemplateId() {
         return templateId;
     }
 
-    public void setTemplateId(String templateId) {
+    public void setTemplateId(long templateId) {
         this.templateId = templateId;
     }
 
-    public String getTemplateDesc() {
-        return templateDesc;
+    public String getStorageId() {
+        return storageId;
     }
 
-    public void setTemplateDesc(String templateDesc) {
-        this.templateDesc = templateDesc;
+    public void setStorageId(String storageId) {
+        this.storageId = storageId;
     }
 
     public URL getThumbnailUrl() {

@@ -5,14 +5,11 @@ import com.autodesk.ic.content.rest.objects.ICNewTemplateRequest;
 import com.autodesk.ic.content.rest.objects.ICTemplateDescriptor;
 import com.autodesk.ic.content.service.*;
 
-import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.autodesk.ic.content.service.objects.CreateNewTemplateRequest;
-import com.autodesk.ic.content.storage.AzureSqlDatabase;
+import com.autodesk.ic.content.storage.objects.TemplateDescriptor;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -62,19 +59,29 @@ public class WebService {
     @GET
     public ICGetTemplatesResponse getTemplates()
     {
-        //templateService.GetAllTemplates();
+        List<TemplateDescriptor> descriptors = templateService.getAllTemplates();
         ICGetTemplatesResponse response = new ICGetTemplatesResponse();
         ICTemplateDescriptor tdesc = new ICTemplateDescriptor();
-        tdesc.setTemplateDesc("Coolest Template Ever");
-        tdesc.setTemplateId("Guid:Guid:Guid:Guid");
-        try {
-            tdesc.setThumbnailUrl(new URL("http://imagestoreurl/imageid"));
-        } catch (MalformedURLException ex)
-        {
-            // do nothing, we like bad urls
+        ArrayList<ICTemplateDescriptor> templateDescriptors = new ArrayList<ICTemplateDescriptor>();
+        for(TemplateDescriptor td : descriptors) {
+            tdesc = new ICTemplateDescriptor();
+            tdesc.setDescription(td.getDescription());
+            tdesc.setTemplateName(td.getTemplateName());
+            tdesc.setTemplateId(td.getTemplateId());
+            tdesc.setUnits(td.getUnits());
+            tdesc.setContributer(td.getContributer());
+            tdesc.setStorageId(td.getStorageId());
+            try {
+                tdesc.setThumbnailUrl(new URL("http://imagestoreurl/imageid"));
+            } catch (MalformedURLException ex)
+            {
+                // do nothing, we like bad urls
+            }
+            templateDescriptors.add(tdesc);
+
         }
 
-        response.setTemplateDescriptors(Arrays.asList(tdesc));
+        response.setTemplateDescriptors(templateDescriptors);
 
         return response;
     }
@@ -110,7 +117,7 @@ public class WebService {
                                 .fileStream(is)
                                 .build();
 
-                        templateService.AddNewTemplate(serviceRequest);
+                        templateService.addNewTemplate(serviceRequest);
                     }
                 }
             } else
@@ -132,7 +139,7 @@ public class WebService {
                         .fileStream(null)
                         .build();
 
-                templateService.AddNewTemplate(serviceRequest);
+                templateService.addNewTemplate(serviceRequest);
             }
 
             if(is != null)
