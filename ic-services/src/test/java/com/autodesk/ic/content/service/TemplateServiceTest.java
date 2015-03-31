@@ -2,6 +2,8 @@ package com.autodesk.ic.content.service;
 
 import com.autodesk.ic.content.service.objects.CreateNewTemplateRequest;
 
+import com.autodesk.ic.content.service.objects.CreateNewTemplateResponse;
+import com.autodesk.ic.content.storage.objects.Template;
 import com.autodesk.ic.content.storage.objects.TemplateDescriptor;
 import org.apache.commons.io.FileUtils;
 import org.testng.annotations.Test;
@@ -45,9 +47,13 @@ public class TemplateServiceTest {
                 .build();
 
         TemplateService templateService = new TemplateService();
-        long templateId = -1;
+        CreateNewTemplateResponse resp = null;
         try {
-             templateId = templateService.addNewTemplate(request);
+             resp = templateService.addNewTemplate(request);
+            // validate the response
+            //
+            assertNotNull(resp.getToken(),"Null access token for new template");
+            assertEquals(resp.getTemplate().getTemplateFile().getFileName(),"testFile.test");
         } catch (Exception ex)
         {
             fail("Exception when adding template to the database");
@@ -57,11 +63,11 @@ public class TemplateServiceTest {
         // Delete the template
         ////
         try {
-
-            templateService.removeTemplate(templateId);
+            if(resp != null)
+            templateService.removeTemplate(resp.getTemplate().getTemplateFile().getId());
         } catch (Exception ex)
         {
-            fail("Exception when removing template from the database");
+            fail("Exception when removing template from the database",ex);
         }
     }
 
@@ -70,7 +76,7 @@ public class TemplateServiceTest {
     {
         TemplateService service = new TemplateService();
         try {
-            List<TemplateDescriptor> descriptors = service.getAllTemplates();
+            List<Template> descriptors = service.getAllTemplates();
         } catch(Exception e)
         {
             fail("failed to get all templates", e);

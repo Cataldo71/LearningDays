@@ -13,7 +13,6 @@ public class TemplateDescriptor {
     private String templateName;
     private String contributer;
     private String units;
-    private String storageId;
     private long templateId;
 
     public String getDescription() {
@@ -36,22 +35,17 @@ public class TemplateDescriptor {
         return units;
     }
 
-    public String getStorageId() {
-        return storageId;
-    }
-
     public long getTemplateId() {
         return templateId;
     }
 
-    private TemplateDescriptor(String desc, String[] categories, String name, String creator, String units, String storageId, long templateId)
+    private TemplateDescriptor(String desc, String[] categories, String name, String creator, String units,  long templateId)
     {
         this.description = desc;
         this.categories = categories;
         this.templateName = name;
         this.contributer = creator;
         this.units = units;
-        this.storageId = storageId;
         this.templateId = templateId;
     }
 
@@ -61,12 +55,11 @@ public class TemplateDescriptor {
         private String _templateName;
         private String _contributer;
         private String _units;
-        private String _storageId;
         private long _templateId;
 
         public TemplateDescriptor build()
         {
-            return new TemplateDescriptor(_description,_categories,_templateName,_contributer,_units,_storageId,_templateId);
+            return new TemplateDescriptor(_description,_categories,_templateName,_contributer,_units, _templateId);
         }
 
         public TemplateDescriptorBuilder description(String _description) {
@@ -91,11 +84,6 @@ public class TemplateDescriptor {
 
         public TemplateDescriptorBuilder units(String _units) {
             this._units = _units;
-            return this;
-        }
-
-        public TemplateDescriptorBuilder storageId(String storageId) {
-            this._storageId = storageId;
             return this;
         }
 

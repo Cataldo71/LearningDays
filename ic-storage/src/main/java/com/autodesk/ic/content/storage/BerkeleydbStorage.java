@@ -33,7 +33,7 @@ public class BerkeleydbStorage implements IStorage {
      * @throws com.autodesk.ic.content.storage.objects.DbException
      */
     @Override
-    public TemplateDescriptor GetTemplateDescriptor(long templateDescId) throws DbException {
+    public TemplateDescriptor getTemplateDescriptor(long templateDescId) throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 
@@ -45,7 +45,7 @@ public class BerkeleydbStorage implements IStorage {
      * @throws com.autodesk.ic.content.storage.objects.DbException
      */
     @Override
-    public List<TemplateDescriptor> GetTemplateDescriptors(long[] templateDescIds) throws DbException {
+    public List<TemplateDescriptor> getTemplateDescriptors(long[] templateDescIds) throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 
@@ -57,7 +57,7 @@ public class BerkeleydbStorage implements IStorage {
      * @throws com.autodesk.ic.content.storage.objects.DbException
      */
     @Override
-    public List<TemplateDescriptor> GetTemplateDescriptorsInCategory(String categoryName) throws DbException {
+    public List<TemplateDescriptor> getTemplateDescriptorsInCategory(String categoryName) throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 
@@ -65,7 +65,7 @@ public class BerkeleydbStorage implements IStorage {
      * @return
      */
     @Override
-    public List<TemplateDescriptor> GetAllTemplateDescriptors() throws DbException {
+    public List<TemplateDescriptor> getAllTemplateDescriptors() throws DbException {
         return null;
     }
 
@@ -77,7 +77,7 @@ public class BerkeleydbStorage implements IStorage {
      * @throws com.autodesk.ic.content.storage.objects.DbException
      */
     @Override
-    public List<TemplateDescriptor> GetTemplateDescriptorsByContributor(String contributor) throws DbException {
+    public List<TemplateDescriptor> getTemplateDescriptorsByContributor(String contributor) throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 
@@ -92,7 +92,7 @@ public class BerkeleydbStorage implements IStorage {
      * @return the Template that was created
      */
     @Override
-    public long AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException {
+    public long addTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 
@@ -103,7 +103,7 @@ public class BerkeleydbStorage implements IStorage {
      * @return fully hydrated Template object
      */
     @Override
-    public Template GetTemplateByDescriptorId(long templateDescId) throws DbException {
+    public Template getTemplateByDescriptorId(long templateDescId) throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 
@@ -114,7 +114,18 @@ public class BerkeleydbStorage implements IStorage {
      * @return fully hydrated Template object
      */
     @Override
-    public Template GetTemplateByFileId(long templateFileId) throws DbException {
+    public Template getTemplateByFileId(long templateFileId) throws DbException {
+        throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
+    }
+
+    /**
+     * Gets all of the fully hydrated template objects from the data store.
+     *
+     * @return
+     * @throws com.autodesk.ic.content.storage.objects.DbException
+     */
+    @Override
+    public List<Template> getAllTemplates() throws DbException {
         throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 
@@ -126,7 +137,7 @@ public class BerkeleydbStorage implements IStorage {
      * @return true if successful
      */
     @Override
-    public boolean DeleteTemplate(long templateDescId) throws DbException {
-        return false;
+    public boolean deleteTemplateByFileId(long templateDescId) throws DbException {
+        throw new DbException(new UnsupportedOperationException("Operation Not Supported"), "Berkely Db storage provider not implemented");
     }
 }

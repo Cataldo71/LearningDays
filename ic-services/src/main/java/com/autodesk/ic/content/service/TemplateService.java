@@ -1,12 +1,12 @@
 package com.autodesk.ic.content.service;
 
 import com.autodesk.ic.content.service.objects.CreateNewTemplateRequest;
+import com.autodesk.ic.content.service.objects.CreateNewTemplateResponse;
 import com.autodesk.ic.content.storage.AzureSqlDatabase;
 import com.autodesk.ic.content.storage.objects.DbException;
 import com.autodesk.ic.content.storage.objects.Template;
 import com.autodesk.ic.content.storage.objects.TemplateDescriptor;
 
-import java.io.BufferedInputStream;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,11 +24,23 @@ public class TemplateService {
     private static final String storageConnectionString =
             "DefaultEndpointsProtocol=https;AccountName=portalvhdsk24ch13b1vchf;AccountKey=sl6ypeaAUbOc7seYiQKPa2FjXmXiFhBcJ1TDYn3Fsa5/N9oHWWB44SFkee8ITbH3YjowNcorAytNfwNh2ZIGYg==";
 
+    /**
+     *
+     * @return
+     */
     public String heartbeat() {
         return db.heartbeat();
     }
-    public long addNewTemplate(CreateNewTemplateRequest request) {
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    public CreateNewTemplateResponse addNewTemplate(CreateNewTemplateRequest request) {
         long newTemplateId = -1;
+        CreateNewTemplateResponse response = new CreateNewTemplateResponse();
+
         // Push the input stream over to Azure Storage Account
         //
 
@@ -47,7 +59,7 @@ public class TemplateService {
             // If there is an input stream - push it up to Azure
             //
             String storageId = "__NOT_UPLOADED__";
-            if(request.getFileStream() != null) {
+ /*           if(request.getFileStream() != null) {
                 BufferedInputStream bis = new BufferedInputStream(request.getFileStream());
 
                 // push the file over to Azure
@@ -55,10 +67,25 @@ public class TemplateService {
 
                 storageId = UUID.randomUUID().toString();
                 azureStorage.StoreFileAsBlob(bis, request.getFileSize(), storageId);
-            }
+            }*/
+            // Create the storage ID for this file - this will be used by the client to upload the file
+            //
+            storageId = UUID.randomUUID().toString();
 
-                // Add the entry to the database
-            newTemplateId = db.AddTemplate(newDescriptor, storageId, request.getFileName(), request.getFileSize());
+            //
+            // Add the entry to the database
+            newTemplateId = db.addTemplate(newDescriptor, storageId, request.getFileName(), request.getFileSize());
+
+            // generate a shared access signature on the container so that the client can upload the file.
+            //
+            String sas = azureStorage.generateTemporaryAccessToken();
+
+            // Build the response
+            //
+            Template t = db.getTemplateByFileId(newTemplateId);
+
+            response.setTemplate(t);
+            response.setToken(sas);
 
         }
         catch (DbException dbex)
@@ -71,10 +98,14 @@ public class TemplateService {
         {
             ex.printStackTrace();
         }
-        return newTemplateId;
+        return response;
 
     }
 
+    /**
+     *
+     * @param templateId
+     */
     public void removeTemplate(long templateId) {
         // get the full template from the db to get the storageID of this template
         //
@@ -83,7 +114,7 @@ public class TemplateService {
         // Delete the template from the db
         //
         try {
-            db.DeleteTemplate(templateId);
+            db.deleteTemplateByFileId(templateId);
 
             // clean up the azure storage
             //
@@ -96,17 +127,42 @@ public class TemplateService {
         }
     }
 
-    public List<TemplateDescriptor> getAllTemplates()
+    /**
+     *
+     * @return
+     */
+    public List<Template> getAllTemplates()
     {
-        List<TemplateDescriptor> descriptors = null;
+        List<Template> templates = null;
         try
         {
-            descriptors = db.GetAllTemplateDescriptors();
+            templates = db.getAllTemplates();
 
         }catch (Exception ex) {
             ex.printStackTrace();
         }
-        return descriptors;
+        return templates;
     }
 
+    /**
+     * Get a single template and append on a shared access string from Azure to allow it to be downloaded.
+     * @param templateFileId
+     * @return
+     */
+    public Template getTemplate(long templateFileId)
+    {
+        Template response = null;
+        try {
+            // Grab the template from the db.
+            //
+            response = db.getTemplateByFileId(templateFileId);
+
+            azureStorage.generateDownloadToken(response.getTemplateFile().getStorageId());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return response;
+    }
 }

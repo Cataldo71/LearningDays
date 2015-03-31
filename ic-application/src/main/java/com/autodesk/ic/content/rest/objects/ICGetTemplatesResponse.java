@@ -6,15 +6,15 @@ import java.util.List;
  * Created by cataldp on 3/11/2015.
  */
 public class ICGetTemplatesResponse {
-    public List<ICTemplateDescriptor> getTemplateDescriptors() {
+    public List<ICTemplate> getTemplateDescriptors() {
         return templateDescriptors;
     }
 
-    public void setTemplateDescriptors(List<ICTemplateDescriptor> templateDescriptors) {
+    public void setTemplateDescriptors(List<ICTemplate> templateDescriptors) {
         this.templateDescriptors = templateDescriptors;
     }
 
-    List<ICTemplateDescriptor> templateDescriptors;
+    List<ICTemplate> templateDescriptors;
 
 
     }

@@ -8,6 +8,7 @@ import java.util.List;
 import com.autodesk.ic.content.storage.objects.DbException;
 import com.autodesk.ic.content.storage.objects.Template;
 import com.autodesk.ic.content.storage.objects.TemplateDescriptor;
+import com.autodesk.ic.content.storage.objects.TemplateFile;
 import com.microsoft.sqlserver.jdbc.*;
 
 /**
@@ -137,7 +138,7 @@ public class AzureSqlDatabase implements IStorage {
      * @return
      */
     @Override
-    public List<TemplateDescriptor> GetAllTemplateDescriptors() throws DbException {
+    public List<TemplateDescriptor> getAllTemplateDescriptors() throws DbException {
 
         Statement statement = null;
         ResultSet rs = null;
@@ -147,8 +148,7 @@ public class AzureSqlDatabase implements IStorage {
             TemplateDescriptor.TemplateDescriptorBuilder builder = new TemplateDescriptor.TemplateDescriptorBuilder();
 
             rs = statement.executeQuery("Select IC_TEMPLATE_DESCRIPTOR.Id, IC_TEMPLATE_DESCRIPTOR.name, IC_TEMPLATE_DESCRIPTOR.description,\n" +
-                    "  IC_TEMPLATE_DESCRIPTOR.Units, IC_TEMPLATE_DESCRIPTOR.Contributor, IC_TEMPLATE_FILE.StorageId from IC_TEMPLATE_DESCRIPTOR\n" +
-                    "JOIN IC_TEMPLATE_FILE ON IC_TEMPLATE_DESCRIPTOR.FileId = IC_TEMPLATE_FILE.ID");
+                    "  IC_TEMPLATE_DESCRIPTOR.Units, IC_TEMPLATE_DESCRIPTOR.Contributor from IC_TEMPLATE_DESCRIPTOR\n");
 
             while (rs.next())
             {
@@ -157,7 +157,6 @@ public class AzureSqlDatabase implements IStorage {
                         .description(rs.getString(3))
                         .units(rs.getString(4))
                         .contributer(rs.getString(5))
-                        .storageId(rs.getString(6))
                         .build());
 
             }
@@ -195,7 +194,7 @@ public class AzureSqlDatabase implements IStorage {
      * @throws com.autodesk.ic.content.storage.objects.DbException
      */
     @Override
-    public TemplateDescriptor GetTemplateDescriptor(long templateDescId) throws DbException {
+    public TemplateDescriptor getTemplateDescriptor(long templateDescId) throws DbException {
         return null;
     }
 
@@ -207,7 +206,7 @@ public class AzureSqlDatabase implements IStorage {
      * @throws com.autodesk.ic.content.storage.objects.DbException
      */
     @Override
-    public List<TemplateDescriptor> GetTemplateDescriptors(long[] templateDescIds) throws DbException {
+    public List<TemplateDescriptor> getTemplateDescriptors(long[] templateDescIds) throws DbException {
         return null;
     }
 
@@ -219,7 +218,7 @@ public class AzureSqlDatabase implements IStorage {
      * @throws com.autodesk.ic.content.storage.objects.DbException
      */
     @Override
-    public List<TemplateDescriptor> GetTemplateDescriptorsInCategory(String categoryName) throws DbException {
+    public List<TemplateDescriptor> getTemplateDescriptorsInCategory(String categoryName) throws DbException {
         return null;
     }
 
@@ -231,7 +230,7 @@ public class AzureSqlDatabase implements IStorage {
      * @throws com.autodesk.ic.content.storage.objects.DbException
      */
     @Override
-    public List<TemplateDescriptor> GetTemplateDescriptorsByContributor(String contributor) throws DbException {
+    public List<TemplateDescriptor> getTemplateDescriptorsByContributor(String contributor) throws DbException {
         return null;
     }
 
@@ -246,11 +245,10 @@ public class AzureSqlDatabase implements IStorage {
      * @return the Template that was created
      */
     @Override
-    public long AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException {
+    public long addTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException {
         Statement statement = null;
         long newTemplateId = -1;
         int templateFileId = -1;
-        Template newTemplate = new Template.TemplateBuilder().Build();
         ResultSet resultSet = null;
         String categoryInsertString = null;
         String TemplateFileInsertString = null;
@@ -302,7 +300,7 @@ public class AzureSqlDatabase implements IStorage {
         {
             sqlEx.printStackTrace();
             try {
-                System.out.println("Database Transaction Failure: AddTemplate");
+                System.out.println("Database Transaction Failure: addTemplate");
                 connection.rollback();
             } catch (SQLException innerex) {
                 // no nothing here
@@ -314,7 +312,6 @@ public class AzureSqlDatabase implements IStorage {
         finally
         {
             try {
-                System.out.println("Database Transaction Failure: AddTemplate");
                 if(statement != null) statement.close();
                 if(resultSet != null) resultSet.close();
             } catch (Exception innerex) {
@@ -328,11 +325,11 @@ public class AzureSqlDatabase implements IStorage {
      * Delete a template from the database. This will delete the template descriptor and the template file
      * as well as any associations to a category
      *
-     * @param templateDescId
+     * @param templateFileId
      * @return true if successful
      */
     @Override
-    public boolean DeleteTemplate(long templateDescId) throws DbException {
+    public boolean deleteTemplateByFileId(long templateFileId) throws DbException {
         // Database should cascade the delete
         // so just delete the template descriptor
         //
@@ -341,7 +338,7 @@ public class AzureSqlDatabase implements IStorage {
         try {
             statement = connection.createStatement();
 
-            statement.executeUpdate("DELETE from IC_TEMPLATE_FILE WHERE ID=" + templateDescId);
+            statement.executeUpdate("DELETE from IC_TEMPLATE_FILE WHERE ID=" + templateFileId);
             connection.commit();
         }
         catch (SQLException sqlEx)
@@ -354,7 +351,7 @@ public class AzureSqlDatabase implements IStorage {
                 // no nothing here
             }
 
-            throw new DbException(sqlEx,"Delete Template from db failed. Transaction rolled back. Template Id:" + templateDescId);
+            throw new DbException(sqlEx,"Delete Template from db failed. Transaction rolled back. Template Id:" + templateFileId);
 
         }
         finally
@@ -363,7 +360,7 @@ public class AzureSqlDatabase implements IStorage {
                 if(statement != null) statement.close();
 
             } catch (Exception innerex) {
-                throw new DbException(innerex,"Error Closing Statement in Delete Template. Template Id:" + templateDescId);
+                throw new DbException(innerex,"Error Closing Statement in Delete Template. Template Id:" + templateFileId);
             }
         }
         return false;
@@ -376,7 +373,7 @@ public class AzureSqlDatabase implements IStorage {
      * @return fully hydrated Template object
      */
     @Override
-    public Template GetTemplateByDescriptorId(long templateDescId) throws DbException {
+    public Template getTemplateByDescriptorId(long templateDescId) throws DbException {
         return null;
     }
 
@@ -387,8 +384,127 @@ public class AzureSqlDatabase implements IStorage {
      * @return fully hydrated Template object
      */
     @Override
-    public Template GetTemplateByFileId(long templateFileId) throws DbException {
-        return null;
+    public Template getTemplateByFileId(long templateFileId) throws DbException {
+        Statement statement = null;
+        ResultSet rs = null;
+        Template response = null;
+        try {
+            statement = connection.createStatement();
+            TemplateDescriptor.TemplateDescriptorBuilder descriptorBuilder = new TemplateDescriptor.TemplateDescriptorBuilder();
+            TemplateFile.TemplateFileBuilder fileBuilder = new TemplateFile.TemplateFileBuilder();
+            rs = statement.executeQuery("Select IC_TEMPLATE_DESCRIPTOR.Id, IC_TEMPLATE_DESCRIPTOR.name, IC_TEMPLATE_DESCRIPTOR.description,\n" +
+                    "  IC_TEMPLATE_DESCRIPTOR.Units, IC_TEMPLATE_DESCRIPTOR.Contributor, IC_TEMPLATE_FILE.StorageId," +
+                    "IC_TEMPLATE_FILE.Filename, IC_TEMPLATE_FILE.ID, IC_TEMPLATE_FILE.FileSize from IC_TEMPLATE_DESCRIPTOR\n" +
+                    "JOIN IC_TEMPLATE_FILE ON IC_TEMPLATE_DESCRIPTOR.FileId = IC_TEMPLATE_FILE.ID WHERE IC_TEMPLATE_FILE.ID=" + templateFileId);
+
+            while (rs.next())
+            {
+                TemplateDescriptor td = descriptorBuilder
+                        .templateId(rs.getInt(1))
+                        .templateName(rs.getString(2))
+                        .description(rs.getString(3))
+                        .units(rs.getString(4))
+                        .contributer(rs.getString(5))
+                        .build();
+                TemplateFile tf = fileBuilder
+                        .storageId(rs.getString(6))
+                        .fileName(rs.getString(7))
+                        .id(rs.getInt(8))
+                        .fileSize(rs.getLong(9))
+                        .build();
+
+                // Should only be 1
+                response = new Template(td,tf);
+
+            }
+        }
+        catch (SQLException sqlEx)
+        {
+            sqlEx.printStackTrace();
+            try {
+                System.out.println("Database Transaction Failure: Get All Templates");
+                connection.rollback();
+            } catch (SQLException innerex) {
+                // no nothing here
+            }
+
+            throw new DbException(sqlEx,"Failed to get all templates");
+
+        }
+        finally
+        {
+            try {
+                if(statement != null) statement.close();
+
+            } catch (Exception innerex) {
+                throw new DbException(innerex,"Error Closing Statement in Get All Templates");
+            }
+        }
+        return response;
+    }
+
+    /**
+     * Gets all of the fully hydrated template objects from the data store.
+     *
+     * @return
+     * @throws com.autodesk.ic.content.storage.objects.DbException
+     */
+    @Override
+    public List<Template> getAllTemplates() throws DbException {
+        Statement statement = null;
+        ResultSet rs = null;
+        ArrayList<Template> results = new ArrayList<Template>();
+        try {
+            statement = connection.createStatement();
+            TemplateDescriptor.TemplateDescriptorBuilder descriptorBuilder = new TemplateDescriptor.TemplateDescriptorBuilder();
+            TemplateFile.TemplateFileBuilder fileBuilder = new TemplateFile.TemplateFileBuilder();
+            rs = statement.executeQuery("Select IC_TEMPLATE_DESCRIPTOR.Id, IC_TEMPLATE_DESCRIPTOR.name, IC_TEMPLATE_DESCRIPTOR.description,\n" +
+                    "  IC_TEMPLATE_DESCRIPTOR.Units, IC_TEMPLATE_DESCRIPTOR.Contributor, IC_TEMPLATE_FILE.StorageId," +
+                    "IC_TEMPLATE_FILE.Filename, IC_TEMPLATE_FILE.ID, IC_TEMPLATE_FILE.FileSize from IC_TEMPLATE_DESCRIPTOR\n" +
+                    "JOIN IC_TEMPLATE_FILE ON IC_TEMPLATE_DESCRIPTOR.FileId = IC_TEMPLATE_FILE.ID");
+
+            while (rs.next())
+            {
+                TemplateDescriptor td = descriptorBuilder
+                        .templateId(rs.getInt(1))
+                        .templateName(rs.getString(2))
+                        .description(rs.getString(3))
+                        .units(rs.getString(4))
+                        .contributer(rs.getString(5))
+                        .build();
+                TemplateFile tf = fileBuilder
+                        .storageId(rs.getString(6))
+                        .fileName(rs.getString(7))
+                        .id(rs.getInt(8))
+                        .fileSize(rs.getLong(9))
+                        .build();
+                results.add(new Template(td,tf));
+
+            }
+        }
+        catch (SQLException sqlEx)
+        {
+            sqlEx.printStackTrace();
+            try {
+                System.out.println("Database Transaction Failure: Get All Templates");
+                connection.rollback();
+            } catch (SQLException innerex) {
+                // no nothing here
+            }
+
+            throw new DbException(sqlEx,"Failed to get all templates");
+
+        }
+        finally
+        {
+            try {
+                if(statement != null) statement.close();
+
+            } catch (Exception innerex) {
+                throw new DbException(innerex,"Error Closing Statement in Get All Templates");
+            }
+        }
+        return results;
     }
 
     private boolean _checkDbExists()

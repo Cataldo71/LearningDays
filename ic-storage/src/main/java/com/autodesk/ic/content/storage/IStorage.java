@@ -38,7 +38,7 @@ public interface IStorage {
      *
      * @return
      */
-    public List<TemplateDescriptor> GetAllTemplateDescriptors() throws DbException;
+    public List<TemplateDescriptor> getAllTemplateDescriptors() throws DbException;
 
     /**
      * Get a single template descriptor given an ID
@@ -46,7 +46,7 @@ public interface IStorage {
      * @return the template descriptor with the given ID
      * @throws DbException
      */
-    public TemplateDescriptor GetTemplateDescriptor(long templateDescId) throws DbException;
+    public TemplateDescriptor getTemplateDescriptor(long templateDescId) throws DbException;
 
     /**
      * Gets a set of template descriptors given a set of template ids
@@ -54,7 +54,7 @@ public interface IStorage {
      * @return collection of template descriptors
      * @throws DbException
      */
-    public List<TemplateDescriptor> GetTemplateDescriptors(long[] templateDescIds) throws DbException;
+    public List<TemplateDescriptor> getTemplateDescriptors(long[] templateDescIds) throws DbException;
 
     /**
      * Gets all of the templates in a given category
@@ -62,7 +62,7 @@ public interface IStorage {
      * @return collection of template descriptors with a relationship to the given category
      * @throws DbException
      */
-    public List<TemplateDescriptor> GetTemplateDescriptorsInCategory(String categoryName) throws DbException;
+    public List<TemplateDescriptor> getTemplateDescriptorsInCategory(String categoryName) throws DbException;
 
     /**
      * Gets all of the templates from a given contributor
@@ -70,7 +70,7 @@ public interface IStorage {
      * @return a collection of templates that were uploaded by the given contributor
      * @throws DbException
      */
-    public List<TemplateDescriptor> GetTemplateDescriptorsByContributor(String contributor) throws DbException;
+    public List<TemplateDescriptor> getTemplateDescriptorsByContributor(String contributor) throws DbException;
 
     /**
      * Adds a single new template to the database. Function assumes that the file has already been stored in
@@ -81,29 +81,35 @@ public interface IStorage {
      * @param size size of the file in bytes
      * @return the TemplateDescriptorId that was created
      */
-    public long AddTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException;
+    public long addTemplate(TemplateDescriptor template, String storageId, String Filename, long size) throws DbException;
 
     /**
      * Delete a template from the database. This will delete the template descriptor and the template file
      * as well as any associations to a category
-     * @param templateDescId
+     * @param templateFileId
      * @return true if successful
      */
-    public boolean DeleteTemplate(long templateDescId) throws DbException;
+    public boolean deleteTemplateByFileId(long templateFileId) throws DbException;
 
     /**
      * Gets a fully hydrated template object from the ID in the descriptor
      * @param templateDescId Id of the template descriptor for the requested template
      * @return fully hydrated Template object
      */
-    public Template GetTemplateByDescriptorId(long templateDescId) throws DbException;
+    public Template getTemplateByDescriptorId(long templateDescId) throws DbException;
 
     /**
      * Gets a fully hydrated Template object given a storage ID
      * @param templateFileId The id of the storage object
      * @return fully hydrated Template object
      */
-    public Template GetTemplateByFileId(long templateFileId) throws DbException;
+    public Template getTemplateByFileId(long templateFileId) throws DbException;
 
-
+    /**
+     * Gets all of the fully hydrated template objects from the data store.
+     *
+     * @return
+     * @throws DbException
+     */
+    public List<Template> getAllTemplates() throws DbException;
 }
