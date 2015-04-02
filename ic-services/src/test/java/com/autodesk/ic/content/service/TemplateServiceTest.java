@@ -15,6 +15,10 @@ import static org.testng.Assert.*;
 
 public class TemplateServiceTest {
 
+    /**
+     * Test the Heartbeat method to make sure the service is up and running.
+     * @throws Exception
+     */
     @Test
     public void testHeartbeat() throws Exception {
         TemplateService service = new TemplateService();
@@ -23,6 +27,10 @@ public class TemplateServiceTest {
         assertNotNull(heartbeat);
     }
 
+    /**
+     * Test adding a new template.
+     * @throws Exception
+     */
     @Test
     public void testAddNewTemplate() throws Exception {
         CreateNewTemplateRequest.CreateNewTemplateRequestBuilder builder = new CreateNewTemplateRequest.CreateNewTemplateRequestBuilder();

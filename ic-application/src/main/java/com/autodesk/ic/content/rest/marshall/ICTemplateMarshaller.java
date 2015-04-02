@@ -13,13 +13,14 @@ public class ICTemplateMarshaller {
         ICTemplate apiObject = new ICTemplate.ICTemplateBuilder()
                 .categories(serviceObject.getTemplateDescriptor().getCategories())
                 .storageId(serviceObject.getTemplateFile().getStorageId())
-                .contributer(serviceObject.getTemplateDescriptor().getContributer())
+                .contributer(serviceObject.getTemplateDescriptor().getContributor())
                 .templateId(serviceObject.getTemplateFile().getId())
                 .templateName(serviceObject.getTemplateDescriptor().getTemplateName())
                 .uploadToken(serviceObject.getTemplateFile().getAccessToken())
                 .description(serviceObject.getTemplateDescriptor().getDescription())
                 .fileName(serviceObject.getTemplateFile().getFileName())
                 .units(serviceObject.getTemplateDescriptor().getUnits())
+                .fileSize(serviceObject.getTemplateFile().getFileSize())
                 .build();
 
 

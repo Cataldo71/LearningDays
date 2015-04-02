@@ -11,7 +11,7 @@ public class ICTemplate {
     private String description;
     private String[] categories;
     private String templateName;
-    private String contributer;
+    private String contributor;
     private String units;
     private URL thumbnailUrl;
 
@@ -21,12 +21,13 @@ public class ICTemplate {
     private String fileName;
     private String uploadToken;
     private String downloadToken;
+    private long fileSize;
 
-    protected ICTemplate(String description, String[] categories, String templateName, String contributer, String units, URL thumbnailUrl, long templateId, String storageId, String fileName, String uploadToken, String downloadToken) {
+    protected ICTemplate(String description, String[] categories, String templateName, String contributer, String units, URL thumbnailUrl, long templateId, String storageId, String fileName, String uploadToken, String downloadToken, long size) {
         this.description = description;
         this.categories = categories;
         this.templateName = templateName;
-        this.contributer = contributer;
+        this.contributor = contributer;
         this.units = units;
         this.thumbnailUrl = thumbnailUrl;
         this.templateId = templateId;
@@ -34,6 +35,7 @@ public class ICTemplate {
         this.fileName = fileName;
         this.uploadToken = uploadToken;
         this.downloadToken = downloadToken;
+        this.fileSize = size;
     }
 
     public String getDescription() {
@@ -48,8 +50,8 @@ public class ICTemplate {
         return templateName;
     }
 
-    public String getContributer() {
-        return contributer;
+    public String getContributor() {
+        return contributor;
     }
 
     public String getUnits() {
@@ -80,6 +82,10 @@ public class ICTemplate {
         return downloadToken;
     }
 
+    public long getFileSize() {
+        return fileSize;
+    }
+
     public static class ICTemplateBuilder
     {
         // Descriptor
@@ -87,7 +93,7 @@ public class ICTemplate {
         private String _description;
         private String[] _categories;
         private String _templateName;
-        private String _contributer;
+        private String _contributor;
         private String _units;
         private URL _thumbnailUrl;
 
@@ -97,13 +103,14 @@ public class ICTemplate {
         private String _fileName;
         private String _uploadToken;
         private String _downloadToken;
+        private long _fileSize;
 
         public ICTemplateBuilder() {}
 
         public ICTemplate build() {
             return new ICTemplate(_description,_categories,
-                    _templateName,_contributer,_units,_thumbnailUrl,_templateId,_storageId,_fileName,
-                    _uploadToken,_downloadToken);
+                    _templateName, _contributor,_units,_thumbnailUrl,_templateId,_storageId,_fileName,
+                    _uploadToken,_downloadToken, _fileSize);
         }
 
         public ICTemplateBuilder description(String _description) {
@@ -122,7 +129,7 @@ public class ICTemplate {
         }
 
         public ICTemplateBuilder contributer(String _contributer) {
-            this._contributer = _contributer;
+            this._contributor = _contributer;
             return this;
         }
 
@@ -140,7 +147,10 @@ public class ICTemplate {
             this._templateId = _templateId;
             return this;
         }
-
+        public ICTemplateBuilder fileSize(long _fileSize) {
+            this._fileSize = _fileSize;
+            return this;
+        }
         public ICTemplateBuilder storageId(String _storageId) {
             this._storageId = _storageId;
             return this;

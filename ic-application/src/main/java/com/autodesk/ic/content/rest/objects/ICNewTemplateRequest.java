@@ -10,9 +10,18 @@ public class ICNewTemplateRequest {
     private String description;
     private String[] categories;
     private String name;
-    private String contributer;
+    private String contributor;
     private String units;
     private long fileSize;
+    private String fileName;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public String getDescription() {
         return description;
@@ -38,12 +47,12 @@ public class ICNewTemplateRequest {
         this.name = name;
     }
 
-    public String getContributer() {
-        return contributer;
+    public String getContributor() {
+        return contributor;
     }
 
-    public void setContributer(String contributer) {
-        this.contributer = contributer;
+    public void setContributor(String contributor) {
+        this.contributor = contributor;
     }
 
     public String getUnits() {

@@ -2,8 +2,7 @@ package com.autodesk.ic.content.service; /**
  * Created by cataldp on 3/23/2015.
  */
 
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.*;
 import com.microsoft.azure.storage.blob.*;
 import com.microsoft.azure.storage.file.FileInputStream;
 
@@ -20,7 +19,74 @@ public class AzureStorage {
             "DefaultEndpointsProtocol=https;AccountName=portalvhdsk24ch13b1vchf;AccountKey=sl6ypeaAUbOc7seYiQKPa2FjXmXiFhBcJ1TDYn3Fsa5/N9oHWWB44SFkee8ITbH3YjowNcorAytNfwNh2ZIGYg==";
 
     private static final String blobContainer = "templates";
+    private static CorsProperties getCORS() {
 
+        CorsProperties corsprop = new CorsProperties();
+
+        CorsRule cr = new CorsRule();
+
+        List<String> allowedHeaders = new ArrayList<String>();
+        allowedHeaders.add("*");
+        cr.setAllowedHeaders(allowedHeaders);
+
+        List<String> exposedHeaders = new ArrayList<String>();
+        exposedHeaders.add("*");
+        cr.setExposedHeaders(exposedHeaders);
+
+        EnumSet<CorsHttpMethods> allowedMethod = EnumSet.of(
+                CorsHttpMethods.CONNECT,
+                CorsHttpMethods.POST,
+                CorsHttpMethods.OPTIONS,
+                CorsHttpMethods.GET,
+                CorsHttpMethods.HEAD,
+                CorsHttpMethods.TRACE);
+        cr.setAllowedMethods(allowedMethod);
+
+        List<String> allowedOrigin = new ArrayList<String>();
+        allowedOrigin.add("*");
+        cr.setAllowedOrigins(allowedOrigin);
+        cr.setMaxAgeInSeconds(20);
+        corsprop.getCorsRules().add(cr);
+
+
+        return corsprop;
+    }
+
+    public AzureStorage()
+    {
+        try {
+            // open up the gaping CORS hole
+            //
+            CloudStorageAccount storageAccount = CloudStorageAccount.parse(storageConnectionString);
+            // Create the blob client.
+            CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+            ServiceProperties currentProps = blobClient.downloadServiceProperties();
+            if(!currentProps.getCors().getCorsRules().isEmpty()) {
+                //currentProps.setCors(new CorsProperties());
+                //blobClient.uploadServiceProperties(currentProps);
+            } else {
+                CorsProperties newCorsProps = getCORS();
+                currentProps.setCors(newCorsProps);
+                blobClient.uploadServiceProperties(currentProps);
+            }
+
+        }
+        catch (URISyntaxException e)
+        {
+            System.out.println("URISyntaxException encountered.");
+            e.printStackTrace();
+        }
+        catch (InvalidKeyException e)
+        {
+            System.out.println("InvalidKeyException encountered.");
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Exception encountered.");
+            e.printStackTrace();
+        }
+    }
     public int StoreFileAsBlob(InputStream is, long length, String storageId ) {
         try
         {

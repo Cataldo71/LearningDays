@@ -11,7 +11,7 @@ public class TemplateDescriptor {
     private String description;
     private String[] categories;
     private String templateName;
-    private String contributer;
+    private String contributor;
     private String units;
     private long templateId;
 
@@ -27,8 +27,8 @@ public class TemplateDescriptor {
         return templateName;
     }
 
-    public String getContributer() {
-        return contributer;
+    public String getContributor() {
+        return contributor;
     }
 
     public String getUnits() {
@@ -44,7 +44,7 @@ public class TemplateDescriptor {
         this.description = desc;
         this.categories = categories;
         this.templateName = name;
-        this.contributer = creator;
+        this.contributor = creator;
         this.units = units;
         this.templateId = templateId;
     }
@@ -53,13 +53,13 @@ public class TemplateDescriptor {
         private String _description;
         private String[] _categories;
         private String _templateName;
-        private String _contributer;
+        private String _contributor;
         private String _units;
         private long _templateId;
 
         public TemplateDescriptor build()
         {
-            return new TemplateDescriptor(_description,_categories,_templateName,_contributer,_units, _templateId);
+            return new TemplateDescriptor(_description,_categories,_templateName, _contributor,_units, _templateId);
         }
 
         public TemplateDescriptorBuilder description(String _description) {
@@ -78,7 +78,7 @@ public class TemplateDescriptor {
         }
 
         public TemplateDescriptorBuilder contributer(String _contributer) {
-            this._contributer = _contributer;
+            this._contributor = _contributer;
             return this;
         }
 

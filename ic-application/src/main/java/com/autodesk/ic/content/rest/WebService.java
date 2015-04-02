@@ -10,21 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.io.BufferedInputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.autodesk.ic.content.service.objects.CreateNewTemplateRequest;
 import com.autodesk.ic.content.service.objects.CreateNewTemplateResponse;
 import com.autodesk.ic.content.storage.objects.Template;
-import com.autodesk.ic.content.storage.objects.TemplateDescriptor;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileItemFactory;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 /**
  * Created by cataldp on 1/22/2015.
@@ -65,17 +56,12 @@ public class WebService {
 
         ICGetTemplatesResponse response = new ICGetTemplatesResponse();
         ArrayList<ICTemplate> templates = new ArrayList<ICTemplate>();
+
+        // Marshal into API objects
+        //
         for(Template td : descriptors) {
-            ICTemplate.ICTemplateBuilder builder = new ICTemplate.ICTemplateBuilder();
-            ICTemplate newTemplate = builder.description(td.getTemplateDescriptor().getDescription())
-                    .templateName(td.getTemplateDescriptor().getTemplateName())
-                    .templateId(td.getTemplateFile().getId())
-                    .units(td.getTemplateDescriptor().getUnits())
-                    .contributer(td.getTemplateDescriptor().getContributer())
-                    .storageId(td.getTemplateFile().getStorageId()).build();
-
+            ICTemplate newTemplate = ICTemplateMarshaller.fromServiceObject(td);
             templates.add(newTemplate);
-
         }
 
         response.setTemplateDescriptors(templates);
@@ -112,11 +98,12 @@ public class WebService {
 
             CreateNewTemplateRequest serviceRequest = requestBuilder.name(request.getName())
                     .units(request.getUnits())
-                    .contributer(request.getContributer())
+                    .contributer(request.getContributor())
                     .description(request.getDescription())
                     .categories(request.getCategories())
                     .fileSize(request.getFileSize())
                     .fileStream(null)
+                    .fileName(request.getFileName())
                     .build();
 
             serviceResponse = templateService.addNewTemplate(serviceRequest);
@@ -126,13 +113,14 @@ public class WebService {
             response = new ICTemplate.ICTemplateBuilder()
                     .categories(serviceResponse.getTemplate().getTemplateDescriptor().getCategories())
                     .storageId(serviceResponse.getTemplate().getTemplateFile().getStorageId())
-                    .contributer(serviceResponse.getTemplate().getTemplateDescriptor().getContributer())
+                    .contributer(serviceResponse.getTemplate().getTemplateDescriptor().getContributor())
                     .templateId(serviceResponse.getTemplate().getTemplateFile().getId())
                     .templateName(serviceResponse.getTemplate().getTemplateDescriptor().getTemplateName())
                     .uploadToken(serviceResponse.getToken())
                     .description(serviceResponse.getTemplate().getTemplateDescriptor().getDescription())
                     .fileName(serviceResponse.getTemplate().getTemplateFile().getFileName())
                     .units(serviceResponse.getTemplate().getTemplateDescriptor().getUnits())
+                    .fileSize(serviceResponse.getTemplate().getTemplateFile().getFileSize())
                     .build();
 
         }

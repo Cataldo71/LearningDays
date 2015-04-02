@@ -35,6 +35,7 @@ public class ContentServletFilter implements Filter {
         //////////
         HttpServletResponse resp = (HttpServletResponse)response;
         resp.setHeader("Access-Control-Allow-Origin","*");
+        resp.setHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
         chain.doFilter(request, response);
     }
 

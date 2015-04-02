@@ -2,14 +2,12 @@ package com.autodesk.ic.content.storage;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.autodesk.ic.content.storage.objects.DbException;
 import com.autodesk.ic.content.storage.objects.Template;
 import com.autodesk.ic.content.storage.objects.TemplateDescriptor;
 import com.autodesk.ic.content.storage.objects.TemplateFile;
-import com.microsoft.sqlserver.jdbc.*;
 
 /**
  * Created by cataldp on 3/12/2015.
@@ -266,7 +264,7 @@ public class AzureSqlDatabase implements IStorage {
             //
             if(newCategories != null)
             for(String newCat : newCategories)
-                    statement.executeUpdate("INSERT into dbo.IC_TEMPLATE_CATEGORY (CategoryName) values (" + newCat + "'sample')");
+                    statement.executeUpdate("INSERT into dbo.IC_TEMPLATE_CATEGORY (CategoryName) values ('" + newCat + "')");
 
             // Add the new Template File
             //
@@ -286,7 +284,7 @@ public class AzureSqlDatabase implements IStorage {
                     "values('" + template.getTemplateName() +
                     "','" + template.getDescription() +
                     "','" + template.getUnits() +
-                    "','" + template.getContributer() +
+                    "','" + template.getContributor() +
                     "','" +templateFileId + "')";
             statement.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
             resultSet = statement.getGeneratedKeys();
@@ -553,7 +551,7 @@ public class AzureSqlDatabase implements IStorage {
         // no categories will ever get created.
         //
         if(originalSet != null)
-            return (String[])newCategories.toArray();
+            return originalSet;
         else
             return null;
     }
