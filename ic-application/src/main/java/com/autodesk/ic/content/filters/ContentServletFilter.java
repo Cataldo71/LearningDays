@@ -11,6 +11,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.TreeSet;
 
 public class ContentServletFilter implements Filter {
 
@@ -37,6 +40,8 @@ public class ContentServletFilter implements Filter {
         resp.setHeader("Access-Control-Allow-Origin","*");
         resp.setHeader("Access-Control-Allow-Headers","Origin, X-Requested-With, Content-Type, Accept");
         chain.doFilter(request, response);
+
+
     }
 
 }
